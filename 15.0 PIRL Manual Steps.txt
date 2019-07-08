@@ -1,0 +1,28 @@
+List<PIRL_Settings__c> lstPirlSetting = new List<PIRL_Settings__c>();
+//update this to the current quarter to test trigger logic in realtime
+Date dt=date.newinstance(2019, 03, 31);
+
+PIRL_Settings__c p1 = new  PIRL_Settings__c(Name = 'PIRLTriggerBatch',Pirl_Batch_Date__c=dt,
+                                            Batch_Size__c= 1500);
+PIRL_Settings__c p2 = new  PIRL_Settings__c(Name = 'PIRL_QuarterlyLogicBatch',Pirl_Batch_Date__c=dt,
+                                            Batch_Size__c= 1500);
+PIRL_Settings__c p3 = new  PIRL_Settings__c(Name = 'PIRL_QuarterlyCopyBatch',Pirl_Batch_Date__c=dt,
+                                            Batch_Size__c= 1500);
+lstPirlSetting.add(p1);
+lstPirlSetting.add(p2);
+lstPirlSetting.add(p3);
+Database.insert(lstPirlSetting,false);
+
+
+PIRLQuarterDetails__c pt = new PIRLQuarterDetails__c(Name= 'CurrentQuarter',
+                                                    Quarter__c = 'Q1',Year__c= '2019');
+Database.insert(pt,false);
+
+TriggerSettings__c tr = new TriggerSettings__c(name='PIRLTrigger',IsActive__c = true);
+Database.insert(tr,false);
+
+
+ESAPI_Settings__c esapiSetting = new ESAPI_Settings__c();
+esapiSetting.EnforceFieldAccessCheck__c = TRUE;
+esapiSetting.SetupOwnerId = UserInfo.getOrganizationId();
+Database.Insert(esapiSetting,false);
